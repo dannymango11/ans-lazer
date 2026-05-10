@@ -1,0 +1,6 @@
+.env
+*.retry
+__pycache__/
+*.pyc
+*.log
+.ansible/

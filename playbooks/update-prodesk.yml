@@ -1,0 +1,24 @@
+---
+- name: Update Prodesk
+  hosts: prodesk
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      timeout: 60
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+      register: upgrade_result
+
+    - name: Show upgraded packages
+      debug:
+        msg: "{{ upgrade_result.stdout_lines}}"
+      when: upgrade_result.changed
+
+    - name: Remove unused packages
+      apt:
+        autoremove: yes
