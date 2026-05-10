@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 *.log
 .ansible/
+inventory/host_vars/prodesk.yml
