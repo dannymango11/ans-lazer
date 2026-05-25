@@ -1,0 +1,8 @@
+- name: Run backup
+  hosts: prodesk
+  become: true
+  tasks:
+    - name: Execute backup script
+      command: /srv/backups/backup.sh
+      async: 3600
+      poll: 30
