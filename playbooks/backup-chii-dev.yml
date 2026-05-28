@@ -1,8 +1,37 @@
-- name: Run backup
+- name: Backup chii-dev
   hosts: prodesk
   become: true
   tasks:
-    - name: Execute backup script
+    - name: Deploy backup script
+      copy:
+        src: ../scripts/backup.sh
+        dest: /srv/backups/backup.sh
+        mode: '0700'
+        owner: root
+        group: root
+
+    - name: Deploy services config
+      copy:
+        src: ../scripts/services.conf
+        dest: /srv/backups/services.conf
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Check host is reachable
+      wait_for:
+        host: "{{ hostvars['mainpc'].ansible_host }}"
+        port: 22
+        timeout: 5
+      register: host_check
+      ignore_errors: true
+
+    - name: Abort if host offline
+      fail: 
+        msg: "Host offline, aborting backup"
+      when: host_check.failed
+
+    - name: Run backup
       command: /srv/backups/backup.sh
       async: 3600
       poll: 30
